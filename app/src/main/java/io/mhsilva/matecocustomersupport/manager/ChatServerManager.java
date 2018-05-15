@@ -3,6 +3,9 @@ package io.mhsilva.matecocustomersupport.manager;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.callbacks.SubscribeCallback;
@@ -12,6 +15,8 @@ import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 
 import io.mhsilva.matecocustomersupport.R;
+import io.mhsilva.matecocustomersupport.model.Message;
+import io.mhsilva.matecocustomersupport.model.TextMessage;
 
 /**
  * Manages external communication with pubnub.
@@ -73,6 +78,9 @@ public class ChatServerManager {
     private class PubNubCallback extends SubscribeCallback {
         private static final String TAG = "PubNubCallback";
 
+        private static final String JSON_TYPE = "type";
+        private static final String JSON_CONTENT = "content";
+
         // INTERFACE IMPLEMENTATION
         @Override
         public void status(PubNub pubnub, PNStatus status) {
@@ -104,8 +112,32 @@ public class ChatServerManager {
         }
 
         @Override
-        public void message(PubNub pubnub, PNMessageResult message) {
-            Log.d(TAG, "UNHANDLED: channel message: " + message.getMessage());
+        public void message(PubNub pubnub, PNMessageResult result) {
+            JsonElement json = result.getMessage();
+            if (json == null || !json.isJsonObject()) {
+                return; // wut
+            }
+            JsonObject jsonObject = json.getAsJsonObject();
+            if (jsonObject == null || !jsonObject.has(JSON_TYPE) || !jsonObject.has(JSON_CONTENT)) {
+                return;
+            }
+            Log.d(TAG, result.getPublisher() + " - message: " + jsonObject.toString());
+
+            Message message;
+            switch (jsonObject.get(JSON_TYPE).getAsString()) {
+                case Message.TYPE_TEXT:
+                    message = new Gson().fromJson(jsonObject.get(JSON_CONTENT), TextMessage.class);
+                    break;
+                case Message.TYPE_IMAGE:
+                    // TODO
+                case Message.TYPE_BILL:
+                    // TODO
+                default:
+                    return;
+            }
+            message.recipient = result.getPublisher();
+            message.timestamp = result.getTimetoken();
+            // todo setup/call listeners to send message
         }
 
         @Override
@@ -113,6 +145,7 @@ public class ChatServerManager {
             Log.d(TAG, "UNHANDLED: " + presence.getChannel() + " - presence: "
                     + presence.getEvent() + "    "  + presence.getUuid() +  "     "
                     + presence.getUserMetadata());
+            // todo send presence update (just occupancy?)
         }
     }
 }
