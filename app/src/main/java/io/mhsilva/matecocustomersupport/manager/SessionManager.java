@@ -16,7 +16,7 @@ public class SessionManager {
     private String mToken;
 
     /**
-     * Used to lazy initialize this singleton, and consequently use Shared Prefs.
+     * Used to lazy initialize this singleton and save/load Shared Prefs tokens.
      */
     public static void initialize(Context context) {
         if (gInstance != null) {
@@ -25,7 +25,7 @@ public class SessionManager {
     }
 
     /**
-     * Retuns the single instance.
+     * Returns the single instance.
      * @return The instance.
      */
     public static SessionManager getInstance() {
