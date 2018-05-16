@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="viewModel" type="io.mhsilva.matecocustomersupport.viewmodel.TextMessageViewModel" />
+        <import type="android.view.View" />
+        <import type="android.view.ViewGroup.LayoutParams" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/text_message_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/chat_message_horizontal_padding"
+        android:layout_marginEnd="@dimen/chat_message_horizontal_padding"
+        android:layout_marginTop="@dimen/chat_message_vertical_padding"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.text}"
+            android:textColor="#333"
+            android:ellipsize="end"
+            android:textSize="12sp" />
+    </android.support.constraint.ConstraintLayout>
+
+</layout>
