@@ -8,6 +8,7 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 
 import io.fabric.sdk.android.Fabric;
+import io.mhsilva.matecocustomersupport.manager.ChatServerManager;
 import io.mhsilva.matecocustomersupport.manager.SessionManager;
 
 /**
@@ -23,6 +24,7 @@ public class ChatApp extends MultiDexApplication {
                 new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()).build());
 
         SessionManager.initialize(getApplicationContext());
+        ChatServerManager.initialize(getApplicationContext());
     }
 
     @Override

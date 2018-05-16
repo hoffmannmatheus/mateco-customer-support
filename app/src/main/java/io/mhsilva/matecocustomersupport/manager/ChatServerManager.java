@@ -135,7 +135,7 @@ public class ChatServerManager {
                 default:
                     return;
             }
-            message.recipient = result.getPublisher();
+            message.sender = result.getPublisher();
             message.timestamp = result.getTimetoken();
             // todo setup/call listeners to send message
         }

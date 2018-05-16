@@ -21,7 +21,7 @@ public abstract class Message {
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_BILL = "bill";
 
-    public @Type int type;
-    public String recipient;
+    public @Type String type;
+    public String sender;
     public long timestamp;
 }
