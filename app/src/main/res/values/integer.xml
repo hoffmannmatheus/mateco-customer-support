@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="chat_input_max_length">300</integer>
-    <integer name="chat_input_max_lines">3</integer>
 </resources>

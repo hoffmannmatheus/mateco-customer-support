@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    android:id="@+id/chat_root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <include
-        layout="@layout/part_chat_input"
-        android:id="@+id/chat_input_layout"
+    <data>
+        <variable name="viewModel" type="io.mhsilva.matecocustomersupport.viewmodel.ChatViewModel"/>
+    </data>
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/chat_root"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/chat_input_bar_height"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_height="match_parent">
 
-    <include
-        layout="@layout/part_chat_messages"
-        android:id="@+id/chat_messages_layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/chat_input_layout" />
+        <include
+            layout="@layout/part_chat_input"
+            android:id="@+id/chat_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/chat_input_bar_height"
+            app:viewModel="@{viewModel}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+        <include
+            layout="@layout/part_chat_messages"
+            android:id="@+id/chat_messages_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:viewModel="@{viewModel}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/chat_input_layout" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>
