@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="chat_input_bar_height">46dp</dimen>
+    <dimen name="chat_message_horizontal_padding">8dp</dimen>
+    <dimen name="chat_message_vertical_padding">8dp</dimen>
+</resources>

@@ -7,16 +7,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
-        layout="@layout/part_chat_messages"
-        android:id="@+id/chat_messages_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/chat_input_layout" />
-
-    <include
         layout="@layout/part_chat_input"
         android:id="@+id/chat_input_layout"
         android:layout_width="match_parent"
@@ -24,5 +14,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <include
+        layout="@layout/part_chat_messages"
+        android:id="@+id/chat_messages_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/chat_input_layout" />
 
 </android.support.constraint.ConstraintLayout>
