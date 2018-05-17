@@ -3,7 +3,8 @@
     <dimen name="chat_top_bar_height">42dp</dimen>
     <dimen name="chat_input_bar_height">46dp</dimen>
     <dimen name="chat_message_horizontal_padding">24dp</dimen>
-    <dimen name="chat_message_vertical_padding">4dp</dimen>
+    <dimen name="chat_message_list_margin">6dp</dimen>
+    <dimen name="chat_message_vertical_padding">3dp</dimen>
     <dimen name="chat_message_corner_radius">24dp</dimen>
     <dimen name="chat_message_text">16sp</dimen>
     <dimen name="chat_message_padding">10dp</dimen>

@@ -91,13 +91,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Bindin
      * Adds a new message to the adapter.
      * @param message The message.
      */
-    public void add(Message message) {
+    public int add(Message message) {
         if (message == null) {
-            return;
+            return -1;
         }
         int index = mMessages.size();
         mMessages.add(message);
         notifyItemInserted(index);
+        return index;
     }
 
     class BindingHolder extends RecyclerView.ViewHolder {

@@ -58,8 +58,6 @@ public class ChatActivity extends AppCompatActivity implements ChatViewModel.Cha
         });
         ButterKnife.bind(this);
         setupRecyclerView();
-        // subscribe to messages
-        mRecyclerView.setForegroundGravity(Gravity.END);
     }
 
     @Override
@@ -85,10 +83,18 @@ public class ChatActivity extends AppCompatActivity implements ChatViewModel.Cha
     }
 
     @Override
-    public void onNewMessage(Message message) {
-        if (mAdapter != null) {
-            mAdapter.add(message);
+    public void onNewMessage(final Message message) {
+        if (message == null || mAdapter == null || mLayoutManager == null) {
+            return;
         }
+        final int index = mAdapter.add(message);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.stopScroll();
+                mLayoutManager.smoothScrollToPosition(mRecyclerView, new RecyclerView.State(), index);
+            }
+        });
     }
 
     @Override
