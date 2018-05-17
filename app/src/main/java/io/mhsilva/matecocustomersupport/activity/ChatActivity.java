@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.databinding.OnRebindCallback;
 import android.databinding.ViewDataBinding;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -31,6 +32,7 @@ public class ChatActivity extends AppCompatActivity implements ChatViewModel.Cha
     private ChatViewModel mViewModel;
     private MessagesAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
+    private boolean mIsScrolledUp = false;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, ChatActivity.class);
@@ -88,18 +90,25 @@ public class ChatActivity extends AppCompatActivity implements ChatViewModel.Cha
             return;
         }
         final int index = mAdapter.add(message);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerView.stopScroll();
-                mLayoutManager.smoothScrollToPosition(mRecyclerView, new RecyclerView.State(), index);
-            }
-        });
+        if (!mIsScrolledUp) {
+            scrollTo(index);
+        }
     }
 
     @Override
     public int getMessageCount() {
         return mAdapter != null ? mAdapter.getItemCount() : 0;
+    }
+
+    private void scrollTo(final int index) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.stopScroll();
+                mLayoutManager.smoothScrollToPosition(mRecyclerView, new RecyclerView.State(),
+                        index);
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -108,5 +117,22 @@ public class ChatActivity extends AppCompatActivity implements ChatViewModel.Cha
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy < 0 && !mIsScrolledUp) {
+                    mIsScrolledUp = true;
+                } else if ((mAdapter.getItemCount() - 1) ==
+                        mLayoutManager.findLastCompletelyVisibleItemPosition()
+                        && mIsScrolledUp) {
+                    mIsScrolledUp = false;
+                }
+            }
+        });
     }
 }
