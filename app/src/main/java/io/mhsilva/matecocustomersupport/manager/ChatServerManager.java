@@ -241,10 +241,12 @@ public class ChatServerManager {
                     // TODO
                 case Message.TYPE_BILL:
                     // TODO
+                case Message.TYPE_TIMESTAMP:
+                    // ignore
                 default:
                     return;
             }
-            message.timestamp = result.getTimetoken();
+            message.timestamp = result.getTimetoken() / 10000;  // to allow for new Date(timestamp)
 
             if (mListener != null) {
                 mListener.onNewMessage(message);

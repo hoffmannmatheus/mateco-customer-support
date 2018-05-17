@@ -11,15 +11,19 @@ import java.util.List;
 
 import io.mhsilva.matecocustomersupport.R;
 import io.mhsilva.matecocustomersupport.databinding.ViewItemMessageTextBinding;
+import io.mhsilva.matecocustomersupport.databinding.ViewItemMessageTimestampBinding;
 import io.mhsilva.matecocustomersupport.model.Message;
 import io.mhsilva.matecocustomersupport.model.TextMessage;
+import io.mhsilva.matecocustomersupport.model.TimestampMessage;
 import io.mhsilva.matecocustomersupport.viewmodel.TextMessageViewModel;
+import io.mhsilva.matecocustomersupport.viewmodel.TimestampMessageViewModel;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.BindingHolder> {
 
     private static final int TYPE_TEXT = 0;
     private static final int TYPE_IMAGE = 1;
     private static final int TYPE_BILL = 2;
+    private static final int TYPE_TIMESTAMP = 3;
 
     private List<Message> mMessages;
 
@@ -35,6 +39,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Bindin
 
             case TYPE_BILL:
                 // todo
+
+            case TYPE_TIMESTAMP:
+                ViewItemMessageTimestampBinding timeBinding = DataBindingUtil.inflate(
+                        LayoutInflater.from(parent.getContext()),
+                        R.layout.view_item_message_timestamp,
+                        parent,
+                        false);
+                return new BindingHolder(timeBinding);
 
             case TYPE_TEXT:
             default:
@@ -59,6 +71,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Bindin
                 // todo
                 break;
 
+            case Message.TYPE_TIMESTAMP:
+                ViewItemMessageTimestampBinding timeBinding = holder.timeBinding;
+                timeBinding.setViewModel(new TimestampMessageViewModel(message.timestamp));
+                break;
+
             case Message.TYPE_TEXT:
                 ViewItemMessageTextBinding textBinding = holder.textBinding;
                 textBinding.setViewModel(new TextMessageViewModel((TextMessage) message));
@@ -76,6 +93,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Bindin
             case Message.TYPE_BILL:
                 return TYPE_BILL;
 
+            case Message.TYPE_TIMESTAMP:
+                return TYPE_TIMESTAMP;
+
             case Message.TYPE_TEXT:
             default:
                 return TYPE_TEXT;
@@ -89,6 +109,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Bindin
 
     /**
      * Adds a new message to the adapter.
+     * <p>
+     * This method will also add the Timestamp Message if needed.
+     * The only current rule is: if there's no previous messages, add the timestamp.
      * @param message The message.
      */
     public int add(Message message) {
@@ -96,6 +119,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Bindin
             return -1;
         }
         int index = mMessages.size();
+        // check timestamp
+        if (index == 0) {
+            mMessages.add(new TimestampMessage(message.timestamp));
+            index++;
+        }
+        // todo: check if previous message is (eg) 24h+ of difference. If so, add timestamp.
         mMessages.add(message);
         notifyItemInserted(index);
         return index;
@@ -103,10 +132,16 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Bindin
 
     class BindingHolder extends RecyclerView.ViewHolder {
         private ViewItemMessageTextBinding textBinding;
+        private ViewItemMessageTimestampBinding timeBinding;
 
         BindingHolder(ViewItemMessageTextBinding binding) {
             super(binding.textMessageRoot);
             this.textBinding = binding;
+        }
+
+        BindingHolder(ViewItemMessageTimestampBinding binding) {
+            super(binding.timestampMessageRoot);
+            this.timeBinding = binding;
         }
     }
 }

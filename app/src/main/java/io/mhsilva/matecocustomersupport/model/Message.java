@@ -20,6 +20,7 @@ public abstract class Message {
     public static final String TYPE_TEXT = "text";
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_BILL = "bill";
+    public static final String TYPE_TIMESTAMP = "timestamp";
 
     public @Type String type;
     public String sender;
