@@ -10,7 +10,6 @@
         android:layout_height="@dimen/chat_top_bar_height"
         android:background="#f8f8f8">
 
-
         <View
             android:id="@+id/chat_topbar_separator"
             android:layout_width="match_parent"
