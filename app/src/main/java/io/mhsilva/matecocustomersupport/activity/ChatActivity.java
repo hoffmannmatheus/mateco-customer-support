@@ -14,6 +14,7 @@ import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.view.ViewGroup;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.mhsilva.matecocustomersupport.R;
 import io.mhsilva.matecocustomersupport.adapter.MessagesAdapter;
@@ -23,8 +24,12 @@ import io.mhsilva.matecocustomersupport.viewmodel.ChatViewModel;
 
 public class ChatActivity extends AppCompatActivity implements ChatViewModel.ChatViewModelListener {
 
-    private LinearLayoutManager mLayoutManager;
+    @BindView(R.id.chat_recyclerView)
+    RecyclerView mRecyclerView;
+
+    private ChatViewModel mViewModel;
     private MessagesAdapter mAdapter;
+    private LinearLayoutManager mLayoutManager;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, ChatActivity.class);
@@ -33,11 +38,11 @@ public class ChatActivity extends AppCompatActivity implements ChatViewModel.Cha
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         ActivityChatBinding binding = DataBindingUtil.setContentView(this,
                 R.layout.activity_chat);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        binding.setViewModel(new ChatViewModel(this));
+        mViewModel = new ChatViewModel(this);
+        binding.setViewModel(mViewModel);
         binding.addOnRebindCallback(new OnRebindCallback() {
             @Override
             public boolean onPreBind(ViewDataBinding binding) {
@@ -51,11 +56,24 @@ public class ChatActivity extends AppCompatActivity implements ChatViewModel.Cha
             }
         });
         ButterKnife.bind(this);
-
-        if (binding.chatMessagesLayout != null) {
-            setupRecyclerView(binding.chatMessagesLayout.chatRecyclerView);
-        }
+        setupRecyclerView();
         // subscribe to messages
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mViewModel != null) {
+            mViewModel.onStart();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mViewModel != null) {
+            mViewModel.onStop();
+        }
     }
 
     @Override
@@ -66,7 +84,9 @@ public class ChatActivity extends AppCompatActivity implements ChatViewModel.Cha
 
     @Override
     public void onNewMessage(Message message) {
-
+        if (mAdapter != null) {
+            mAdapter.add(message);
+        }
     }
 
     @Override
@@ -74,11 +94,11 @@ public class ChatActivity extends AppCompatActivity implements ChatViewModel.Cha
         return mAdapter != null ? mAdapter.getItemCount() : 0;
     }
 
-    private void setupRecyclerView(RecyclerView recyclerView) {
+    private void setupRecyclerView() {
         mLayoutManager = new LinearLayoutManager(this);
         mAdapter = new MessagesAdapter();
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mAdapter);
     }
 }

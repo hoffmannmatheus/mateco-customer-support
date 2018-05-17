@@ -50,6 +50,7 @@
             app:layout_constraintEnd_toStartOf="@id/chat_input_action"
             android:addTextChangedListener="@{viewModel.inputWatcher}"
             android:setOnEditorActionListener="@{viewModel.inputEditorAction}"
+            android:text="@{viewModel.input}"
             android:background="@drawable/edittext_background"
             android:hint="@string/chat_input_hint"
             android:imeOptions="actionSend|flagNoExtractUi"

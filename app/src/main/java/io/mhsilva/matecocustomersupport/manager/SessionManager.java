@@ -19,7 +19,7 @@ public class SessionManager {
      * Used to lazy initialize this singleton and save/load Shared Prefs tokens.
      */
     public static void initialize(Context context) {
-        if (gInstance != null) {
+        if (gInstance == null) {
             gInstance = new SessionManager(context);
         }
     }

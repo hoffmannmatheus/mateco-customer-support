@@ -9,8 +9,7 @@ import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
-import java.util.Objects;
-
+import io.mhsilva.matecocustomersupport.manager.ChatServerManager;
 import io.mhsilva.matecocustomersupport.model.Message;
 import io.mhsilva.matecocustomersupport.model.TextMessage;
 
@@ -20,11 +19,26 @@ public class ChatViewModel extends BaseObservable {
 
     public ObservableField<String> input = new ObservableField<>();
     public ObservableField<Boolean> canSend = new ObservableField<>();
+    public ObservableField<Boolean> supportOnline = new ObservableField<>();
 
     public ChatViewModel(ChatViewModelListener listener) {
         mListener = listener;
         input.set("");
         canSend.set(false);
+        supportOnline.set(false);
+    }
+
+    public void onStart() {
+        ChatServerManager.getInstance().subscribe(getServerListener());
+    }
+
+    public void onStop() {
+        ChatServerManager.getInstance().unsubscribe();
+    }
+
+    public void updateSupportOccupancy(int occupancy) {
+        supportOnline.set(occupancy >= 2); // me & support
+        notifyChange();
     }
 
     public boolean isEmpty() {
@@ -48,7 +62,7 @@ public class ChatViewModel extends BaseObservable {
             = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-            if (actionId == EditorInfo.IME_ACTION_GO) {
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
                 sendMessage();
                 return true;
             }
@@ -62,9 +76,30 @@ public class ChatViewModel extends BaseObservable {
             return;
         }
         Message message = new TextMessage(text.trim());
-        //send message
+        input.set("");
+        ChatServerManager.getInstance().sendMessage(message);
+        if (mListener != null) {
+            mListener.onNewMessage(message);
+        }
+        notifyChange();
     }
 
+    private ChatServerManager.ChatServerListener getServerListener() {
+        return new ChatServerManager.ChatServerListener() {
+            @Override
+            public void onNewMessage(Message message) {
+                if (mListener != null) {
+                    mListener.onNewMessage(message);
+                    notifyChange();
+                }
+            }
+
+            @Override
+            public void onPresenceUpdate(int occupancy) {
+                updateSupportOccupancy(occupancy);
+            }
+        };
+    }
 
     // INNER LISTENER INTERFACE
     public interface ChatViewModelListener {
