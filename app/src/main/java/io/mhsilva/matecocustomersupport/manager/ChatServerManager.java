@@ -44,16 +44,6 @@ public class ChatServerManager {
      */
     private static final String CHANNEL_PREFIX = "chat.";
 
-    /**
-     * PubNub Message type key.
-     */
-    private static final String JSON_TYPE = "type";
-
-    /**
-     * PubNub Message content key.
-     */
-    private static final String JSON_CONTENT = "content";
-
     private static ChatServerManager gInstance;
 
     private PubNub mPubNubClient;
@@ -123,10 +113,7 @@ public class ChatServerManager {
         message.sender = getUserId();
         message.timestamp = System.currentTimeMillis();
 
-        JsonObject json = new JsonObject();
-        json.addProperty(JSON_TYPE, message.type);
-        json.add(JSON_CONTENT, new Gson().toJsonTree(message));
-
+        JsonObject json = new Gson().toJsonTree(message).getAsJsonObject();
         mPubNubClient
                 .publish()
                 .message(json)
@@ -212,15 +199,16 @@ public class ChatServerManager {
                 return; // wut
             }
             JsonObject jsonObject = json.getAsJsonObject();
-            if (jsonObject == null || !jsonObject.has(JSON_TYPE) || !jsonObject.has(JSON_CONTENT)) {
+            if (jsonObject == null || !jsonObject.has("type")
+                    || !jsonObject.has("sender")) {
                 return;
             }
             Log.d(TAG, result.getPublisher() + " - message: " + jsonObject.toString());
 
             Message message;
-            switch (jsonObject.get(JSON_TYPE).getAsString()) {
+            switch (jsonObject.get("type").getAsString()) {
                 case Message.TYPE_TEXT:
-                    message = new Gson().fromJson(jsonObject.get(JSON_CONTENT), TextMessage.class);
+                    message = new Gson().fromJson(jsonObject, TextMessage.class);
                     break;
                 case Message.TYPE_IMAGE:
                     // TODO
@@ -239,9 +227,6 @@ public class ChatServerManager {
 
         @Override
         public void presence(PubNub pubnub, PNPresenceEventResult presence) {
-            Log.d(TAG, "UNHANDLED: " + presence.getChannel() + " - presence: "
-                    + presence.getEvent() + "    "  + presence.getUuid() +  "     "
-                    + presence.getUserMetadata());
             if (getSupportChannel().equals(presence.getChannel()) && mListener != null) {
                 mListener.onPresenceUpdate(presence.getOccupancy());
             }

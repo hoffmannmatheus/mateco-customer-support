@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -36,9 +37,8 @@ public class ChatViewModel extends BaseObservable {
         ChatServerManager.getInstance().unsubscribe();
     }
 
-    public void updateSupportOccupancy(int occupancy) {
-        supportOnline.set(occupancy >= 2); // me & support
-        notifyChange();
+    public boolean isSupportOnline() {
+        return supportOnline.get();
     }
 
     public boolean isEmpty() {
@@ -63,25 +63,31 @@ public class ChatViewModel extends BaseObservable {
         @Override
         public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
             if (actionId == EditorInfo.IME_ACTION_SEND) {
-                sendMessage();
+                sendMessage(textView);
                 return true;
             }
             return false;
         }
     };
 
-    private void sendMessage() {
+    public void sendMessage(View view) {
         String text = input.get();
         if (text == null || text.trim().isEmpty()) {
             return;
         }
         Message message = new TextMessage(text.trim());
-        input.set("");
         ChatServerManager.getInstance().sendMessage(message);
-        if (mListener != null) {
-            mListener.onNewMessage(message);
-        }
+        input.set("");
+        canSend.set(false);
         notifyChange();
+    }
+
+    public void sendImage(View view) {
+
+    }
+
+    public void voiceInput(View view) {
+
     }
 
     private ChatServerManager.ChatServerListener getServerListener() {
@@ -96,7 +102,8 @@ public class ChatViewModel extends BaseObservable {
 
             @Override
             public void onPresenceUpdate(int occupancy) {
-                updateSupportOccupancy(occupancy);
+                supportOnline.set(occupancy >= 2); // me & support
+                notifyChange();
             }
         };
     }

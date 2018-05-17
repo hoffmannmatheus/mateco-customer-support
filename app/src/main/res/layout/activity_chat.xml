@@ -10,6 +10,16 @@
         android:layout_height="match_parent">
 
         <include
+            layout="@layout/part_chat_topbar"
+            android:id="@+id/chat_topbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/chat_top_bar_height"
+            app:viewModel="@{viewModel}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
             layout="@layout/part_chat_input"
             android:id="@+id/chat_input_layout"
             android:layout_width="match_parent"
@@ -27,7 +37,7 @@
             app:viewModel="@{viewModel}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chat_topbar_layout"
             app:layout_constraintBottom_toTopOf="@id/chat_input_layout" />
 
     </android.support.constraint.ConstraintLayout>
