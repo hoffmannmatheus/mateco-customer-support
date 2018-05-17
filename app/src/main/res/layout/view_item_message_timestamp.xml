@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="viewModel" type="io.mhsilva.matecocustomersupport.viewmodel.TimestampMessageViewModel" />
+    </data>
+
+    <FrameLayout
+        android:id="@+id/timestamp_message_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/chat_message_horizontal_padding"
+        android:paddingEnd="@dimen/chat_message_horizontal_padding"
+        android:paddingTop="@dimen/chat_message_vertical_padding">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/timestamp_message_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.time}"
+                android:textAllCaps="true"
+                android:textColor="@color/chat_self_background"
+                android:textSize="@dimen/chat_timestamp"
+                android:fontFamily="sans-serif-medium"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1.5dp"
+                android:background="@color/chat_self_background"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/timestamp_message_time"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1.5dp"
+                android:background="@color/chat_self_background"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toEndOf="@id/timestamp_message_time"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </FrameLayout>
+</layout>
