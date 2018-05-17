@@ -17,20 +17,20 @@ import io.mhsilva.matecocustomersupport.model.TextMessage;
 public class ChatViewModel extends BaseObservable {
 
     private ChatViewModelListener mListener;
+    private int mChatPresence = 0;
 
     public ObservableField<String> input = new ObservableField<>();
     public ObservableField<Boolean> canSend = new ObservableField<>();
-    public ObservableField<Boolean> supportOnline = new ObservableField<>();
 
     public ChatViewModel(ChatViewModelListener listener) {
         mListener = listener;
         input.set("");
         canSend.set(false);
-        supportOnline.set(false);
     }
 
     public void onStart() {
         ChatServerManager.getInstance().subscribe(getServerListener());
+        ChatServerManager.getInstance().checkSupportPresence();
     }
 
     public void onStop() {
@@ -38,7 +38,7 @@ public class ChatViewModel extends BaseObservable {
     }
 
     public boolean isSupportOnline() {
-        return supportOnline.get();
+        return mChatPresence >= 2; // me & support
     }
 
     public boolean isEmpty() {
@@ -102,7 +102,7 @@ public class ChatViewModel extends BaseObservable {
 
             @Override
             public void onPresenceUpdate(int occupancy) {
-                supportOnline.set(occupancy >= 2); // me & support
+                mChatPresence = occupancy;
                 notifyChange();
             }
         };

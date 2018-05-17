@@ -13,6 +13,8 @@ import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.enums.PNReconnectionPolicy;
 import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
+import com.pubnub.api.models.consumer.presence.PNHereNowChannelData;
+import com.pubnub.api.models.consumer.presence.PNHereNowResult;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 
@@ -125,6 +127,31 @@ public class ChatServerManager {
                             Log.d(TAG, "(sendMessage) error:" + status.toString());
                         } else {
                             Log.d(TAG, "(sendMessage) OK");
+                        }
+                    }
+                });
+    }
+
+    public void checkSupportPresence() {
+        mPubNubClient
+                .hereNow()
+                .channels(Collections.singletonList(getSupportChannel()))
+                .async(new PNCallback<PNHereNowResult>() {
+                    @Override
+                    public void onResponse(PNHereNowResult result, PNStatus status) {
+                        if (status.isError()) {
+                            Log.e(TAG, "Could not get FRIENDS OF HereNow! "
+                                    + status.getErrorData().getThrowable());
+                            return;
+                        }
+                        int occupancy = 0;
+                        for (PNHereNowChannelData channel : result.getChannels().values()) {
+                            if (getSupportChannel().equals(channel.getChannelName())) {
+                                occupancy = channel.getOccupancy();
+                            }
+                        }
+                        if (mListener != null) {
+                            mListener.onPresenceUpdate(occupancy);
                         }
                     }
                 });
