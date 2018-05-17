@@ -18,14 +18,13 @@ public class ChatViewModel extends BaseObservable {
 
     private ChatViewModelListener mListener;
     private int mChatPresence = 0;
+    private boolean canSend = false;
 
     public ObservableField<String> input = new ObservableField<>();
-    public ObservableField<Boolean> canSend = new ObservableField<>();
 
     public ChatViewModel(ChatViewModelListener listener) {
         mListener = listener;
         input.set("");
-        canSend.set(false);
     }
 
     public void onStart() {
@@ -45,6 +44,10 @@ public class ChatViewModel extends BaseObservable {
         return mListener == null || mListener.getMessageCount() == 0;
     }
 
+    public boolean canSend() {
+        return canSend;
+    }
+
     public TextWatcher inputWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
         public void onTextChanged(CharSequence s, int start, int before, int count) {  }
@@ -52,7 +55,7 @@ public class ChatViewModel extends BaseObservable {
             String text = input.get();
             if (text != null && !text.equals(editable.toString())) {
                 input.set(editable.toString());
-                canSend.set(!TextUtils.isEmpty(input.get()));
+                canSend = !TextUtils.isEmpty(input.get());
                 notifyChange();
             }
         }
@@ -64,6 +67,7 @@ public class ChatViewModel extends BaseObservable {
         public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
             if (actionId == EditorInfo.IME_ACTION_SEND) {
                 sendMessage(textView);
+                textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 return true;
             }
             return false;
@@ -78,7 +82,7 @@ public class ChatViewModel extends BaseObservable {
         Message message = new TextMessage(text.trim());
         ChatServerManager.getInstance().sendMessage(message);
         input.set("");
-        canSend.set(false);
+        canSend = false;
         notifyChange();
     }
 

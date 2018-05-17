@@ -6,24 +6,33 @@
     <data>
         <variable name="viewModel" type="io.mhsilva.matecocustomersupport.viewmodel.TextMessageViewModel" />
         <import type="android.view.View" />
-        <import type="android.view.ViewGroup.LayoutParams" />
+        <import type="android.view.Gravity" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <FrameLayout
         android:id="@+id/text_message_root"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/chat_message_horizontal_padding"
-        android:layout_marginEnd="@dimen/chat_message_horizontal_padding"
-        android:layout_marginTop="@dimen/chat_message_vertical_padding"
-        android:orientation="vertical">
-        <TextView
+        android:paddingStart="@dimen/chat_message_horizontal_padding"
+        android:paddingEnd="@dimen/chat_message_horizontal_padding"
+        android:paddingTop="@dimen/chat_message_vertical_padding">
+
+        <android.support.constraint.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.text}"
-            android:textColor="#333"
-            android:ellipsize="end"
-            android:textSize="12sp" />
-    </android.support.constraint.ConstraintLayout>
+            android:layout_gravity="@{viewModel.isMessageFromSelf() ? Gravity.END : Gravity.START}"
+            android:background="@{viewModel.isMessageFromSelf() ? @drawable/chat_self_background : @drawable/chat_other_background, default=@drawable/chat_self_background}"
+            android:padding="@dimen/chat_message_padding"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.text}"
+                android:textColor="@color/chat_message"
+                android:textAlignment="@{viewModel.isMessageFromSelf() ? View.TEXT_ALIGNMENT_TEXT_END : View.TEXT_ALIGNMENT_TEXT_START, default=textEnd}"
+                android:textSize="@dimen/chat_message_text" />
+        </android.support.constraint.ConstraintLayout>
+
+    </FrameLayout>
 
 </layout>

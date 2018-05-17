@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
+import android.view.Gravity;
 import android.view.ViewGroup;
 
 import butterknife.BindView;
@@ -58,6 +59,7 @@ public class ChatActivity extends AppCompatActivity implements ChatViewModel.Cha
         ButterKnife.bind(this);
         setupRecyclerView();
         // subscribe to messages
+        mRecyclerView.setForegroundGravity(Gravity.END);
     }
 
     @Override
