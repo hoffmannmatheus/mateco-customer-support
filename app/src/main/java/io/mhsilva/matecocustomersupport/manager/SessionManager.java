@@ -59,4 +59,13 @@ public class SessionManager {
     public String getSessionToken() {
         return mToken;
     }
+
+    /**
+     * Checks whether the given token matches the current session token.
+     * @param givenToken The token to compare to.
+     * @return Does the given token matches the current session?
+     */
+    public boolean matchesToken(String givenToken) {
+        return mToken.equals(givenToken);
+    }
 }

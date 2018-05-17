@@ -112,7 +112,7 @@ public class ChatServerManager {
         if (message == null) {
             return;
         }
-        message.sender = getUserId();
+        message.sender = SessionManager.getInstance().getSessionToken();
         message.timestamp = System.currentTimeMillis();
 
         JsonObject json = new Gson().toJsonTree(message).getAsJsonObject();
@@ -244,7 +244,6 @@ public class ChatServerManager {
                 default:
                     return;
             }
-            message.sender = result.getPublisher();
             message.timestamp = result.getTimetoken();
 
             if (mListener != null) {
