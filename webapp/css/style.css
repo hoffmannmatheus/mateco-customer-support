@@ -1,0 +1,71 @@
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: Raleway Regular, Helvetica;
+  background-color: transparent;
+}
+
+/**
+ * Main content (client chat)
+ */
+
+.chat-container {
+  height: 100%;
+  margin-left: 200px;
+  font-size: 18px;
+  padding: 0px 10px;
+}
+
+/**
+ * Left panel (client list).
+ */
+
+.left-panel {
+  height: 100%;
+  width: 160px;
+  float:left;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #333;
+  color: white;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding: 20px;
+}
+
+.left-panel h1 {
+  display: block;
+  margin: 25px 0 25px 0;
+  font-size: 24pt;
+}
+
+.left-panel p {
+  display: block;
+  font-size: 12pt;
+}
+
+.left-panel a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 12px;
+  color: #818181;
+  display: block;
+}
+
+.left-panel a:hover {
+  color: #f1f1f1;
+}
+
+@media screen and (max-height: 450px) {
+  .left-panel {
+    padding-top: 15px;
+  }
+  
+  .left-panel a {
+    font-size: 18px;
+  }
+}
