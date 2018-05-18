@@ -25,6 +25,7 @@ const app = new Vue({
      */
     setupPunNub: function() {
       var instance = this;
+
       this.pubnub = PUBNUB.init({
         subscribe_key: 'sub-c-ef77311c-57d7-11e8-b48d-6233128f1163',
         publish_key: 'pub-c-de29294d-b8f8-449b-94c6-84940ed06a97',
@@ -34,15 +35,33 @@ const app = new Vue({
           instance.errorMessage = JSON.stringify(error);
         }
       });
-      this.pubnub.subscribe({
-        message : function(m) {
-          console.log(m);
+
+      this.pubnub.channel_group_list_channels({
+        channel_group: "customer-support",
+        callback : function(response, error){
+          if (error) {
+            instance.errorMessage = JSON.stringify(error);
+          }
+          if (response && response.channels) {
+            instance.clients = response.channels;
+          }
         },
         error : function (error) {
-          instance.errorMessage = JSON.stringify(error);
-        },
-        channel_group: "family"
+          console.log(JSON.stringify(error));
+        }
       });
+
+      this.pubnub.addListener({
+        status: function(statusEvent) {
+          console.log('PubNub status:', statusEvent.category);
+        },
+        message: function(message) {
+          instance.handleNewMessage(message);
+        },
+        presence: function(presenceEvent) {
+          // handle presence
+        }
+      })
     },
 
     /**

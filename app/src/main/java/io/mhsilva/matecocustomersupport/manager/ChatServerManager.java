@@ -13,11 +13,13 @@ import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.enums.PNReconnectionPolicy;
 import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
+import com.pubnub.api.models.consumer.channel_group.PNChannelGroupsAddChannelResult;
 import com.pubnub.api.models.consumer.presence.PNHereNowChannelData;
 import com.pubnub.api.models.consumer.presence.PNHereNowResult;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import io.mhsilva.matecocustomersupport.R;
@@ -39,12 +41,17 @@ public class ChatServerManager {
     /**
      * The string prefix used to identify users in PubNub.
      */
-    private static final String UUID_PREFIX = "user.";
+    private static final String UUID_PREFIX = "user-";
 
     /**
      * The string prefix used to create support chat channels in PubNub.
      */
-    private static final String CHANNEL_PREFIX = "chat.";
+    private static final String CHANNEL_PREFIX = "chat-";
+
+    /**
+     * The string that defines the main PubNub channel group name.
+     */
+    private static final String CHANNEL_GROUP = "customer-support";
 
     private static ChatServerManager gInstance;
 
@@ -95,6 +102,16 @@ public class ChatServerManager {
                 .channels(Collections.singletonList(getSupportChannel()))
                 .withPresence()
                 .execute();
+        mPubNubClient.addChannelsToChannelGroup()
+                .channelGroup(CHANNEL_GROUP)
+                .channels(Collections.singletonList(getSupportChannel()))
+                .async(new PNCallback<PNChannelGroupsAddChannelResult>() {
+                    @Override
+                    public void onResponse(PNChannelGroupsAddChannelResult result,
+                                           PNStatus status) {
+                        Log.d(TAG, "(addChannelsToChannelGroup) Success: "+!status.isError());
+                    }
+                });
     }
 
     /**

@@ -3,21 +3,29 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1">
-    <title>Matheus Hoffmann Silva</title>
+    <title>MateCo Customer Support</title>
     <link href="css/style.css" rel="stylesheet" />
   </head>
   <body class="clearfix">
 
-    <div id="mateco-support-app" class="container" >
-      <!-- MENU -->
+    <div id="mateco-support-app">
+
+      <!-- CLIENTS LIST -->
       <div class="left-panel">
         <h1>MateCo Customer Support</h1>
-        <a v-for="client in clients" v-on:click="setClient(client)">{client}</a>
+        <p
+          v-for="client in clients"
+          v-on:click="setClient(client)"
+          class="client-row"
+          v-bind:class="{ active: isCurrentClient(client) }">
+              {{client}}
+        </p>
         <p v-if="clients.length == 0">No clients chats</p>
       </div>
-      <!-- CONTENT ROUTER -->
+
+      <!-- CLIENT CHAT -->
       <transition name="fade">
-        <div class="chat-container clearfix">
+        <div class="chat-container">
           
           <div v-if="errorMessage" class="content name-center">
             <p>Error: {{errorMessage}}</p>
