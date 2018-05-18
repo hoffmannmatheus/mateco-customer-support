@@ -18,7 +18,9 @@
           v-on:click="setClient(client)"
           class="client-row"
           v-bind:class="{ active: isCurrentClient(client) }">
-              {{client}}
+            <span class="presence-indicator"
+              v-bind:class="{ online: isClientOnline(client) }"></span>
+            {{client}}
         </p>
         <p v-if="clients.length == 0">No clients chats</p>
       </div>
@@ -32,12 +34,20 @@
           </div>
           
           <div v-if="hasClientSelected()" class="content name-center">
-              <h1>Hello, my name is</h1>
-              <h1>Matheus Hoffmann Silva</h1>
+              <h1>{{currentClient}}</h1>
+
+              <div>
+                <p class="chat-message" v-for="message in messages">{{message.text}}</p>
+              </div>
+
+              <form id="hang-chat-message-form" @submit.prevent="sendMessage" class="chat-message">
+                  <input v-model="ownMessage"></input>
+                  <button type="submit">Submit</button>
+              </form>
           </div>
           
           <div v-else class="content name-center">
-              <p>Select a client</p>
+              <h1>Select a client...</h1>
           </div>
         </div>
       </transition>
@@ -45,7 +55,7 @@
     </div>
 
     <!-- SCRIPTS -->
-    <script src="https://cdn.pubnub.com/pubnub-3.16.5.min.js"></script>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.20.3.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="js/app.js"></script>
   </body>
