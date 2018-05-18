@@ -1,0 +1,60 @@
+body {
+  font-family: Helvetica;
+}
+.chat-container {
+  height: 100%;
+  margin-left: 280px;
+  font-size: 18px;
+  padding: 0px 10px;
+}
+.chat-container h1 {
+  font-size: 18pt;
+}
+.left-panel {
+  height: 100%;
+  width: 240px;
+  float:left;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #333;
+  color: white;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+.left-panel h1 {
+  display: block;
+  margin: 25px;
+  font-size: 24pt;
+}
+.left-panel a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 12px;
+  color: #818181;
+  display: block;
+}
+.left-panel p {
+  font-size: 10pt;
+  padding: 10px;
+}
+.client-row.active {
+  background-color: #555;
+}
+.client-row:hover {
+  background-color: #666;
+}
+.presence-indicator {
+  height: 10px;
+  width: 10px;
+  background-color: #dedede;
+  border-radius: 50%;
+  display: inline-block;
+}
+.online {
+  background-color: #1dd49a;
+}
+.issue {
+  font-style: italic;
+}

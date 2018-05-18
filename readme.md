@@ -20,7 +20,6 @@ Then, client will subscribe to its 'pubnub channel' for customer support (string
 This connection allows this client to receive/send messages to/from the Customer Support page.
 The Chat Activity is then started, bringing in the views that allow for user interaction.
 
-
 The customer support page
 ----
 Since this was not the focus of this iteration, the web page is very simple. The code is built into a single HTML file so it can be opened on a local browser.
