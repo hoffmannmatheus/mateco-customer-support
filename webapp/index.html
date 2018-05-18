@@ -4,15 +4,74 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1">
     <title>MateCo Customer Support</title>
-    <link href="css/style.css" rel="stylesheet" />
+    <style>
+      body {
+        font-family: Helvetica;
+      }
+      .chat-container {
+        height: 100%;
+        margin-left: 280px;
+        font-size: 18px;
+        padding: 0px 10px;
+      }
+      .chat-container h1 {
+        font-size: 18pt;
+      }
+      .left-panel {
+        height: 100%;
+        width: 240px;
+        float:left;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #333;
+        color: white;
+        overflow-x: hidden;
+        overflow-y: scroll;
+      }
+      .left-panel h1 {
+        display: block;
+        margin: 25px;
+        font-size: 24pt;
+      }
+      .left-panel a {
+        padding: 6px 8px 6px 16px;
+        text-decoration: none;
+        font-size: 12px;
+        color: #818181;
+        display: block;
+      }
+      .left-panel p {
+        font-size: 10pt;
+        padding: 10px;
+      }
+      .client-row.active {
+        background-color: #555;
+      }
+      .client-row:hover {
+        background-color: #666;
+      }
+      .presence-indicator {
+        height: 10px;
+        width: 10px;
+        background-color: #dedede;
+        border-radius: 50%;
+        display: inline-block;
+      }
+      .online {
+        background-color: #1dd49a;
+      }
+    </style>
   </head>
-  <body class="clearfix">
+  <body>
 
-    <div id="mateco-support-app">
+    <div id="mateco-support-app" v-cloak>
 
       <!-- CLIENTS LIST -->
       <div class="left-panel">
         <h1>MateCo Customer Support</h1>
+        <p>Clients:</p>
         <p
           v-for="client in clients"
           v-on:click="setClient(client)"
@@ -26,37 +85,225 @@
       </div>
 
       <!-- CLIENT CHAT -->
-      <transition name="fade">
-        <div class="chat-container">
-          
-          <div v-if="errorMessage" class="content name-center">
-            <p>Error: {{errorMessage}}</p>
-          </div>
-          
-          <div v-if="hasClientSelected()" class="content name-center">
-              <h1>{{currentClient}}</h1>
-
-              <div>
-                <p class="chat-message" v-for="message in messages">{{message.text}}</p>
-              </div>
-
-              <form id="hang-chat-message-form" @submit.prevent="sendMessage" class="chat-message">
-                  <input v-model="ownMessage"></input>
-                  <button type="submit">Submit</button>
-              </form>
-          </div>
-          
-          <div v-else class="content name-center">
-              <h1>Select a client...</h1>
-          </div>
+      <div class="chat-container">
+        <p v-if="errorMessage">Error: {{errorMessage}}</p>
+        
+        <div v-if="hasClientSelected()">
+          <h1>Client: {{currentClient}}</h1>
+          <p>Messages:</p>
+          <p class="chat-message" v-for="message in messages">
+            {{message.sender == 'CustomerService' ? 'Customer Service: ' : 'Client: '}}
+            {{message.text}}
+          </p>
+          <form id="hang-chat-message-form" @submit.prevent="sendMessage" class="chat-message">
+            <input v-model="ownMessage"></input>
+            <button type="submit">Send</button>
+          </form>
         </div>
-      </transition>
+        <h1 v-else>Select a client...</h1>
+
+      </div>
 
     </div>
 
     <!-- SCRIPTS -->
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.20.3.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="js/app.js"></script>
+    <script>
+      /**
+       * This is the main controller for MateCo Support web app.
+       */
+      const app = new Vue({
+        el: '#mateco-support-app',
+
+        data: {
+          currentClient: null,
+          clients: [],
+          clientsPresence: {},
+          messages: [],
+          ownMessage: "",
+          errorMessage: null
+        },
+
+        mounted: function () {
+          this.setupPunNub();
+        },
+
+        methods: {
+
+          /**
+           * Sets up the PubNub client and subscribes to the support channel.
+           */
+          setupPunNub: function () {
+            let instance = this;
+
+            this.pubnub = new PubNub({
+              subscribeKey: 'sub-c-ef77311c-57d7-11e8-b48d-6233128f1163',
+              publishKey: 'pub-c-de29294d-b8f8-449b-94c6-84940ed06a97',
+              uuid: 'CustomerSupport',
+              presenceTimeout: 20,
+              error: function (error) {
+                instance.errorMessage = JSON.stringify(error);
+              }
+            });
+
+            this.pubnub.channelGroups.listChannels(
+              { channelGroup: "customer-support" },
+              function(status, response){
+                if (status.error) {
+                  instance.errorMessage = JSON.stringify(status);
+                }
+                if (response && response.channels) {
+                  instance.clients = response.channels;
+                  instance.pollClientsPresence();
+                }
+              }
+            );
+
+            this.pubnub.addListener({
+              status: function (statusEvent) {
+                console.log('PubNub status:', statusEvent.category);
+              },
+              message: function (message) {
+                instance.handleNewMessage(message.message);
+              },
+              presence: function (presenceEvent) { }
+            });
+          },
+
+          /**
+           * Handle a new incoming message.
+           * @param message The message received.
+           */
+          handleNewMessage: function (message) {
+            if (message && message.type) {
+              this.messages.push(message);
+            }
+          },
+
+          /**
+           * Sends a new message to clients.
+           * @param text The text message.
+           */
+          sendMessage: function () {
+            if (!this.hasClientSelected() || !this.ownMessage) {
+              return;
+            }
+            let message = {text: this.ownMessage, type: 'text', sender: 'CustomerService'};
+            this.pubnub.publish(
+              { message, channel: this.currentClient }, 
+              function(status, response) {
+                if (status.error) {
+                  console.log("publishing failed w/ status: ", status);
+                }
+              }
+            );
+            this.ownMessage = "";
+          },
+
+          /**
+           * Sets the new current client.
+           * @param client The client to set to.
+           */
+          setClient: function (client) {
+            if (!client || this.currentClient === client) {
+              return;
+            }
+            if (this.currentClient) {
+              this.disconnectClient(this.currentClient);
+            }
+            this.messages = [];
+            this.currentClient = client;
+            this.connectClient(this.currentClient);
+          },
+
+          /**
+           * Connects from a clent.
+           * @param client The client to connect.
+           */
+          connectClient: function (client) {
+            if (!client) {
+              return;
+            }
+            this.pubnub.subscribe({ 
+              channels: [client] 
+            });
+          },
+
+          /**
+           * Disconnects from a clent.
+           * @param client The client to disconnect.
+           */
+          disconnectClient: function (client) {
+            if (!client) {
+              return;
+            }
+            this.pubnub.unsubscribe({
+              channels: [client]
+            });
+          },
+
+          /**
+           * Checks if the given client is the current one.
+           * @param client The client to check.
+           * @returns {boolean} Is this the current client?
+           */
+          isCurrentClient: function (client) {
+            return this.currentClient === client;
+          },
+
+          /**
+           * Checks if the given client is online.
+           * @param client The client to check.
+           * @returns {boolean} Is this client online?
+           */
+          isClientOnline: function (client) {
+            return !!this.clientsPresence[client];
+          },
+
+          /**
+           * Checks if there's a client selected.
+           * @returns {boolean} Is there a client selected?
+           */
+          hasClientSelected: function (client) {
+            return !!this.currentClient;
+          },
+
+          /**
+           * Periodically checks occupancy on each client channel, to verify presence.
+           */
+          pollClientsPresence: function () {
+            let instance = this;
+
+            let channelHasClient = function(occupants) {
+              // just filter 'me' out
+              return Array.isArray(occupants)
+                && occupants.filter( o => o.uuid != 'CustomerSupport').length > 0;
+            };
+
+            let poll = function () {
+              instance.pubnub.hereNow(
+                { channels: this.clients, includeState: true },
+                function (status, response) {
+                  if (status.error) {
+                    return;
+                  }
+                  let newPresenceState = {};
+                  for (let channel in response.channels) {
+                    newPresenceState[channel] = channelHasClient(response.channels[channel].occupants);
+                  }
+                  instance.clientsPresence = newPresenceState;
+                }
+              );
+            };
+            // infinitely poll
+            setInterval(poll, 2000);
+            // and once immediately
+            poll();
+          }
+        }
+      });
+    </script>
+
   </body>
 </html>
