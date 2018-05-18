@@ -67,7 +67,6 @@ public class ChatViewModel extends BaseObservable {
         public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
             if (actionId == EditorInfo.IME_ACTION_SEND) {
                 sendMessage(textView);
-                textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 return true;
             }
             return false;
