@@ -62,6 +62,9 @@
       .online {
         background-color: #1dd49a;
       }
+      .issue {
+        font-style: italic;
+      }
     </style>
   </head>
   <body>
@@ -81,7 +84,7 @@
               v-bind:class="{ online: isClientOnline(client) }"></span>
             {{client}}
         </p>
-        <p v-if="clients.length == 0">No clients chats</p>
+        <p v-if="clients.length == 0" class="issue">No clients</p>
       </div>
 
       <!-- CLIENT CHAT -->
@@ -95,6 +98,7 @@
             {{message.sender == 'CustomerService' ? 'Customer Service: ' : 'Client: '}}
             {{message.text}}
           </p>
+          <p v-if="messages.length == 0" class="issue">No messages</p>
           <form id="hang-chat-message-form" @submit.prevent="sendMessage" class="chat-message">
             <input v-model="ownMessage"></input>
             <button type="submit">Send</button>

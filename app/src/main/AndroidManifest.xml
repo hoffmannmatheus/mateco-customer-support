@@ -17,7 +17,7 @@
             android:value="459211528f62bf9beb30ce60ca56ba51bd946e44" />
 
         <activity
-            android:name=".StartupActivity"
+            android:name=".activity.StartupActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Splash">
@@ -30,6 +30,7 @@
         <activity
             android:name=".activity.ChatActivity"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
             android:theme="@style/Theme.Design.NoActionBar"/>
     </application>
 

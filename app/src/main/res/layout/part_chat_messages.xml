@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable name="viewModel" type="io.mhsilva.matecocustomersupport.viewmodel.ChatViewModel"/>
         <import type="android.view.View"/>
@@ -42,8 +41,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/chat_empty_text"
-            android:textSize="16sp"
-            android:alpha="0.5"
+            android:textSize="@dimen/chat_message_text"
+            android:alpha="0.35"
             android:fontFamily="sans-serif-light"
             android:textColor="@color/title_color"
             android:visibility="@{viewModel.isEmpty() ? View.VISIBLE : View.GONE, default=visible}"

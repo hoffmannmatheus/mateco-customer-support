@@ -7,7 +7,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/chat_top_bar_height"
-        android:background="#f8f8f8">
+        android:background="@color/chat_input_background">
 
         <View
             android:id="@+id/chat_topbar_separator"
@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/chat_title"
-            android:textSize="14sp"
+            android:textSize="@dimen/chat_top_bar_title"
             android:textAllCaps="true"
             android:fontFamily="sans-serif-light"
             android:textColor="@color/title_color"
@@ -33,13 +33,13 @@
             app:layout_constraintBottom_toTopOf="@id/chat_topbar_separator"/>
 
         <View
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="@dimen/chat_presence_indicator"
+            android:layout_height="@dimen/chat_presence_indicator"
             android:background="@{viewModel.isSupportOnline() ? @drawable/online_indicator : @drawable/offline_indicator, default=@drawable/offline_indicator}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/chat_topbar_separator"
             app:layout_constraintStart_toEndOf="@id/chat_topbar_title"
-            android:layout_marginStart="8dp" />
+            android:layout_marginStart="@dimen/chat_text_padding" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>

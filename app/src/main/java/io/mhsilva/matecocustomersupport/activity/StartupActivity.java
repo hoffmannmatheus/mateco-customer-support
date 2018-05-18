@@ -1,9 +1,10 @@
-package io.mhsilva.matecocustomersupport;
+package io.mhsilva.matecocustomersupport.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
+import io.mhsilva.matecocustomersupport.R;
 import io.mhsilva.matecocustomersupport.activity.ChatActivity;
 
 public class StartupActivity extends AppCompatActivity {

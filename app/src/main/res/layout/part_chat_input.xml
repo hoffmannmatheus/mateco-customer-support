@@ -7,7 +7,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f8f8f8">
+        android:background="@color/chat_input_background">
 
         <View
             android:id="@+id/chat_input_top_separator"
@@ -22,7 +22,7 @@
             android:id="@+id/chat_input_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="@dimen/chat_text_padding"
             android:onClick="@{viewModel::sendImage}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/chat_input_top_separator"
@@ -33,7 +33,7 @@
             android:id="@+id/chat_input_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="@dimen/chat_text_padding"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/chat_input_top_separator"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -44,8 +44,8 @@
             android:id="@+id/chat_input_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="@dimen/chat_text_padding"
+            android:layout_marginEnd="@dimen/chat_text_padding"
             app:layout_constraintTop_toBottomOf="@id/chat_input_top_separator"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/chat_input_gallery"

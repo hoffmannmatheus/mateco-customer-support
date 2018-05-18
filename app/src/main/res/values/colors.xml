@@ -10,6 +10,7 @@
     <color name="title_color">#888888</color>
 
     <color name="chat_message">#888888</color>
+    <color name="chat_input_background">#f8f8f8</color>
 
     <color name="chat_self_background">#E7E7E7</color>
     <color name="chat_self_outline">#E7E7E7</color>
