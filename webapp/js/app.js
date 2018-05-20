@@ -42,20 +42,6 @@ const app = new Vue({
           instance.errorMessage = JSON.stringify(error);
         }
       });
-
-      this.pubnub.channelGroups.listChannels(
-        { channelGroup: "customer-support" },
-        function(status, response){
-          if (status.error) {
-            instance.errorMessage = JSON.stringify(status);
-          }
-          if (response && response.channels) {
-            instance.clients = response.channels;
-            instance.pollClientsPresence();
-          }
-        }
-      );
-
       this.pubnub.addListener({
         status: function (statusEvent) {
           console.log('PubNub status:', statusEvent.category);
@@ -65,6 +51,7 @@ const app = new Vue({
         },
         presence: function (presenceEvent) { }
       });
+      this.pollClientsPresence();
     },
 
     /**
@@ -180,7 +167,7 @@ const app = new Vue({
           && occupants.filter( o => o.uuid != PN_UUID).length > 0;
       };
 
-      let poll = function () {
+      let updateChannelPresence = () => {
         instance.pubnub.hereNow(
           { channels: this.clients, includeState: true },
           function (status, response) {
@@ -195,10 +182,26 @@ const app = new Vue({
           }
         );
       };
+
+      let listChannels = () => {
+        instance.pubnub.channelGroups.listChannels(
+          { channelGroup: "customer-support" },
+          function(status, response){
+            if (status.error) {
+              instance.errorMessage = JSON.stringify(status);
+            }
+            if (response && response.channels) {
+              instance.clients = response.channels;
+              updateChannelPresence();
+            }
+          }
+        );
+      };
+
       // infinitely poll
-      setInterval(poll, 2000);
+      setInterval(listChannels, 2000);
       // and once immediately
-      poll();
+      listChannels();
     }
   }
 });
