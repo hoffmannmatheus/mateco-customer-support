@@ -2,16 +2,16 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1">
     <title>MateCo Customer Support</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
 
-    <div id="mateco-support-app" v-cloak>
+    <div id="mateco-support-app" class="main-container" v-cloak>
 
       <!-- CLIENTS LIST -->
-      <div class="left-panel">
+      <div class="menu-panel">
         <h1>MateCo Customer Support</h1>
         <p>Clients:</p>
         <p
@@ -23,26 +23,38 @@
               v-bind:class="{ online: isClientOnline(client) }"></span>
             {{client}}
         </p>
-        <p v-if="clients.length == 0" class="issue">No clients</p>
+        <p v-if="clients.length == 0" class="italic">No clients</p>
       </div>
 
       <!-- CLIENT CHAT -->
-      <div class="chat-container">
-        <p v-if="errorMessage">Error: {{errorMessage}}</p>
-        <div v-if="hasClientSelected()">
-          <h1>Client: {{currentClient}}</h1>
-          <p>Messages:</p>
-          <p class="chat-message" v-for="message in messages">
-            {{message.sender == 'CustomerService' ? 'Customer Service: ' : 'Client: '}}
-            {{message.text}}
-          </p>
-          <p v-if="messages.length == 0" class="issue">No messages</p>
-          <form id="hang-chat-message-form" @submit.prevent="sendMessage" class="chat-message">
-            <input v-model="ownMessage"></input>
-            <button type="submit">Send</button>
-          </form>
+      <div class="chat-panel">
+        <p v-show="errorMessage" class="warning">Error: {{errorMessage}}</p>
+        <p v-show="!hasClientSelected()" class="warning">Select a client...</p>
+        
+        <div v-show="hasClientSelected()" class="top-bar">
+          <h1>
+            {{currentClient}}
+            <span class="presence-indicator"
+              v-bind:class="{ online: isClientOnline(currentClient) }"></span>
+          </h1>
         </div>
-        <h1 v-else>Select a client...</h1>
+        <ol v-show="hasClientSelected()" class="chat-area" ref="chatarea">
+          <li
+            v-show="messages.length > 0"
+            v-for="message in messages"
+            v-bind:class="{ left: message.sender == 'CustomerService', right: message.sender != 'CustomerService' }">
+            <div class="message">
+              <p v-if="messages.length == 0" class="italic">No messages</p>
+              <p class="author">{{message.sender == 'CustomerService' ? 'Customer Service' : 'Client'}}</p>
+              <p>{{message.text}}</p>
+            </div>
+          <li>
+        </ol>
+
+        <form v-show="hasClientSelected()" id="hang-chat-message-form" @submit.prevent="sendMessage" class="bottom-bar">
+          <input v-model="ownMessage" class="input-textarea" ref="chatinput"></input>
+          <button type="submit" class="input-button">Send</button>
+        </form>
 
       </div>
 
@@ -51,7 +63,7 @@
     <!-- SCRIPTS -->
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.20.3.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="js/app.js" />
+    <script src="js/app.js"></script>
 
   </body>
 </html>

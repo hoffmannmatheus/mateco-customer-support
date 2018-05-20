@@ -1,50 +1,66 @@
 body {
   font-family: Helvetica;
+  padding:0;
+  margin:0;
 }
-.chat-container {
-  height: 100%;
-  margin-left: 280px;
-  font-size: 18px;
-  padding: 0px 10px;
+
+.main-container {
+  width:100%;
+  height:100%;
 }
-.chat-container h1 {
-  font-size: 18pt;
-}
-.left-panel {
-  height: 100%;
-  width: 240px;
-  float:left;
+
+.menu-panel {
   position: fixed;
-  z-index: 1;
-  top: 0;
   left: 0;
+  width: 200px;
+  height: 100%;
   background-color: #333;
   color: white;
   overflow-x: hidden;
   overflow-y: scroll;
 }
-.left-panel h1 {
+
+.chat-panel {
+  position: fixed;
+  left: 200px;
+  right: 0;
+  height: 100%;
+  font-size: 18px;
+  display:flex;
+  display: -webkit-flex;
+  flex-direction: column;
+  -webkit-flex-direction: column;
+  -webkit-align-content: stretch;
+  align-content: stretch;
+}
+
+.menu-panel h1 {
   display: block;
   margin: 25px;
   font-size: 24pt;
 }
-.left-panel a {
+
+.menu-panel a {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
   font-size: 12px;
   color: #818181;
   display: block;
 }
-.left-panel p {
+
+.menu-panel p {
   font-size: 10pt;
   padding: 10px;
 }
+
 .client-row.active {
   background-color: #555;
 }
+
 .client-row:hover {
   background-color: #666;
 }
+
 .presence-indicator {
   height: 10px;
   width: 10px;
@@ -52,9 +68,118 @@ body {
   border-radius: 50%;
   display: inline-block;
 }
+
 .online {
   background-color: #1dd49a;
 }
-.issue {
+
+.italic {
   font-style: italic;
 }
+
+.top-bar {
+  background: #d3d3d3;
+  position: relative;
+  overflow: hidden; 
+}
+
+.top-bar h1 {
+  text-align: center;
+  font-size: 16pt;
+  color: #666;
+}
+
+.warning {
+  margin: auto auto;
+}
+
+.chat-area {
+  list-style: none;
+  overflow-y: scroll;
+  background: #fff;
+  flex: 1;
+  -ms-flex: 1;
+  margin: 0;
+  padding: 0 0 50px 0;
+}
+
+.chat-area li {
+  padding: 0.5rem;
+  overflow: hidden;
+  display: flex;
+}
+
+.right {
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.message {
+  background: #E7E7E7;
+  padding: 10px;
+  border-radius: 2px;
+  border: 2px solid #E7E7E7;
+  border-radius: 8px 8px 0px 8px;
+}
+
+.left .message {
+  order: 1;
+  background: #FFF;
+  border-radius: 8px 8px 8px 0px;
+}
+
+.message p {
+  font-size: 14px;
+  margin: 0 0 0.2rem 0;
+}
+.message .author {
+  font-size: 12px;
+  font-style: italic;
+}
+.message time {
+  font-size: 0.7rem;
+  color: #ccc;
+}
+
+.bottom-bar {
+  background: #d3d3d3;
+  position: relative;
+  overflow: hidden;
+  display:flex;
+  display: -webkit-flex;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+  -webkit-align-content: stretch;
+  align-content: stretch;
+  padding: 5px;
+}
+
+.input-textarea {
+  flex: 1;
+  -ms-flex: 1;
+  margin-right: 5px;
+  background: #FFF;
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+}
+
+.input-button {
+  background-color: inherit;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-block;
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+  background: #07c;
+}
+
+.input-button:hover {
+  background: #3af;
+}
+
+[v-cloak] > * { display:none }
+[v-cloak]::before { content: "Loading…" }
