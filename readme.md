@@ -6,9 +6,15 @@ On the "other" side, the support can answer your messages using a simple web pag
 
 *Note*: This app only serves the purposes of development playground, learning and showcasing for myself.
 
+Usage
+----
+1. Install / open app  (TODO: provide APK)
+2. Open https://hoffmannmatheus.github.io/mateco-customer-support/webapp/
+3. On the Support Page, tap on an online client (green) to exchange messages.
+
 
 General architecture
-----
+====
 The app is native Android (Java), while the Customer Support client is Single Page web App (Vue.js).
 These apps communicate using PubNub third party service for message exchange and presence tracking.
 
@@ -27,7 +33,7 @@ This file will first load its dependencies (Vue.js and PubNub clients). Then, th
 When a client link is tapped, it opens up a simple chat view where messages can be exchanged with that specific client.
 
 Known Issues and TODO's
-----
+====
 - Currently there are no tests.
 - Only Text messages are currently supported.
 - No special support for bigger screens (tablets).
