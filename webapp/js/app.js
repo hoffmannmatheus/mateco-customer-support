@@ -74,6 +74,8 @@ const app = new Vue({
     handleNewMessage: function (message) {
       if (message && message.type) {
         this.messages.push(message);
+        let chatArea = this.$refs['chatarea'];
+        chatArea.scrollTop = chatArea.scrollHeight
       }
     },
 
@@ -111,6 +113,7 @@ const app = new Vue({
       this.messages = [];
       this.currentClient = client;
       this.connectClient(this.currentClient);
+      this.$refs['chatinput'].focus();
     },
 
     /**
